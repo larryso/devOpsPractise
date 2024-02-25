@@ -31,10 +31,22 @@ NOTE: we use -exec [command] {} + to execute and terminate a command
 [https://c.biancheng.net/view/4028.html](https://c.biancheng.net/view/4028.html)
 [https://www.ibm.com/docs/hu/aix/7.2?topic=s-sed-command](https://www.ibm.com/docs/hu/aix/7.2?topic=s-sed-command)
 
-### <h2 id="linux-jq"> Linux sed Command - Stream Editor </h2>
+### <h2 id="linux-jq">jq Command for JSON Processing </h2>
 
 1. Access Properties by using . selector
-curl http://api.open-notify.org/iss-now.json | js '.message'
+curl http://api.open-notify.org/iss-now.json | jq '.message'
+
+jq build a json:
+```
+ jq --null-input --arg 'releaseDate' "$(date --iso-8601=seconds)" --arg 'buildId' "123" '{pipelineTag:{"ReleaseDate":$releaseDate, "ReleaseVersion":$buildId}}'>variables.json
+```
+
+jq read:
+
+```
+cat prod.json | jq '.variables | paths(scalars) as $path | {"key":$path |join("."), "value": getpath($path)} | .value'
+```
+
 
 #### Reference
 [https://www.baeldung.com/linux/jq-command-json](https://www.baeldung.com/linux/jq-command-json)

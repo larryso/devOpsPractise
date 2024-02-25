@@ -1,4 +1,4 @@
-# # google/jsonnet - the data templating language
+# google/jsonnet - the data templating language
 
 Jsonnet is a data templating language that extends json syntax, adding constructs for generating, translating and refinning data.
 
@@ -86,7 +86,6 @@ local house_rum = 'Banks Rum';
   },
 }
 ```
-
 ## References
 Another way to avoid duplication is to refer to another part of the structure.
 * self refers to the current object.
@@ -128,7 +127,122 @@ Strings can be looked up / sliced too, by unicode codepoint.
 }
 ```
 
+## Abstraction
+jsonnet has rich abstraction features:
+* Imports
+* Merging
+* Functions
 
+#### Imports
+Just as other languages, Jsonnet allows code to be imported from other files:
+`local secret = import "./secret.libsonnet`
+The exported object (the only non-local one) of secret.libsonnet is now available as a local variable called secret.
+
+#### Merging
+Deep merging allows you to change parts of an object without touching all of it. Consider the following example:
+```json
+local secret = {
+  kind: Secret,
+  metadata: {
+    name: "mySecret",
+    namespace: "default", // need to change that
+  },
+  data: {
+    foo: std.base64("foo")
+  }
+};
+```
+To change the namespace only, we can use the special merge key +: like so:
+```json
+// define the patch:
+local patch = {
+  metadata+: {
+    namespace: "myApp"
+  }
+}
+```
+The difference between : and +: is that the former replaces the original data at that key, while the latter applies the new object as a patch on top, meaning that values will be updated if possible but all other stay like they are.
+To merge those two, just add (+) the patch to the original:
+`secret + patch`
+The output of this is the following JSON object:
+```json
+{
+  "kind": "Secret",
+  "metadata": {
+    "name": "mySecret",
+    "namespace": "myApp"
+  },
+  "data": {
+    "foo": "Zm9vCg=="
+  }
+}
+```
+
+#### [Functions](https://jsonnet.org/learning/tutorial.html#functions) 
+Like Python, functions have positional parameters, named parameters, and default arguments. Closures are also supported. The examples below should demonstrate the syntax. Many functions are already defined in the [standard library](https://jsonnet.org/ref/stdlib.html).
+
+```json
+// Define a local function.
+// Default arguments are like Python:
+local my_function(x, y=10) = x + y;
+
+// Define a local multiline function.
+local multiline_function(x) =
+  // One can nest locals.
+  local temp = x * 2;
+  // Every local ends with a semi-colon.
+  [temp, temp + 1];
+
+local object = {
+  // A method
+  my_method(x): x * x,
+};
+
+{
+  // Functions are first class citizens.
+  call_inline_function:
+    (function(x) x * x)(5),
+
+  call_multiline_function: multiline_function(4),
+
+  // Using the variable fetches the function,
+  // the parens call the function.
+  call: my_function(2),
+
+  // Like python, parameters can be named at
+  // call time.
+  named_params: my_function(x=2),
+  // This allows changing their order
+  named_params2: my_function(y=3, x=2),
+
+  // object.my_method returns the function,
+  // which is then called like any other.
+  call_method1: object.my_method(3),
+
+  standard_lib:
+    std.join(' ', std.split('foo/bar', '/')),
+  len: [
+    std.length('hello'),
+    std.length([1, 2, 3]),
+  ],
+}
+```
+output will be"
+```json
+{
+  "call": 12,
+  "call_inline_function": 25,
+  "call_method1": 9,
+  "call_multiline_function": [8, 9],
+  "len": [
+    5,
+    3
+  ],
+  "named_params": 12,
+  "named_params2": 5,
+  "standard_lib": "foo bar"
+}
+```
 ## Reference
 
 [https://jsonnet.org/learning/tutorial.html](https://jsonnet.org/learning/tutorial.html)
