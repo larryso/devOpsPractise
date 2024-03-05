@@ -1,4 +1,4 @@
-# JSON Syntax
+# JSON Syntax - JavaScript Object Notation (轻量级数据交换格式)
 
 ## JSON syntax is derived from JavaScript object notation syntax:
 * Data is in name/value pairs

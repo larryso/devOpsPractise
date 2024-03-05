@@ -8,6 +8,9 @@ To run this project locally, you need:
 2.	Install MAVEN
 3.	MAVEN package and access from http://localhost:8081/home
 
+## install HashicorpVault for secret management
+
+
 
 
 # Contribute

@@ -4,6 +4,9 @@ Jsonnet is a data templating language that extends json syntax, adding construct
 
 It is intended for projects with complex configurations that benefit from advanced scripting capabilities and code re-use.
 
+## Getting started with jsonnet
+
+
 ## Syntax
 Let's start with an example that does not involve any computation but uses new syntax.
 

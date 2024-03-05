@@ -1,0 +1,1 @@
+docker-compose -f ./vault/docker-compose.yml up -d
