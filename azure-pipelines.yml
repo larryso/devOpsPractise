@@ -31,7 +31,7 @@ stages:
   - stage: build_artifact
     displayName: Start build artifacts
     dependsOn: initialization
-    condition: and(success(), ${{parameters.condition}})
+    condition: and(succeeded(), ${{parameters.condition}})
     jobs:
       - job: prepare_build_env
         displayName: Prepare Build environment
@@ -41,7 +41,7 @@ stages:
   - stage: Deploy_${{parameters.stageName}}
     displayName: Deploy to ${{parameters.stageName}}
     dependsOn: build_artifact
-    condition: and(success(), ${{parameters.condition}})
+    condition: and(succeeded(), ${{parameters.condition}})
     jobs:
       - job: release_to_environment
         displayName: Release to environment
