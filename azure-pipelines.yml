@@ -9,6 +9,16 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+parameters:
+  - name: condition
+    type: boolean
+    default: true
+  - name: stageName
+    default: uncontrolled
+    values:
+      - controlled
+      - uncontrolled
+
 stages:
   - stage: initialization
     displayName: Pipeline start initialization
@@ -20,8 +30,20 @@ stages:
 
   - stage: build_artifact
     displayName: Start build artifacts
+    dependsOn: initialization
+    condition: and(success(), ${{parameters.condition}})
     jobs:
       - job: prepare_build_env
         displayName: Prepare Build environment
         steps:
           - template: pipelines/build_artifact_job.yml
+
+  - stage: Deploy_${{parameters.stageName}}
+    displayName: Deploy to ${{parameters.stageName}}
+    dependsOn: build_artifact
+    condition: and(success(), ${{parameters.condition}})
+    jobs:
+      - job: release_to_environment
+        displayName: Release to environment
+        steps:
+          - template: pipelines/deployment_job.yml
