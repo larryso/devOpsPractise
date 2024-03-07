@@ -1,0 +1,15 @@
+parameters:
+  - name: p1
+    type: string
+    default: hello
+  - name: p2
+    type: boolean
+    default: true
+
+steps:
+  - task: Bash@3
+    displayName: Initialization task
+    inputs:
+      targetType: 'inline'
+      script: |
+         echo "start build artifact ...."

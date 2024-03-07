@@ -17,3 +17,11 @@ stages:
         displayName: Initialization Job
         steps:
           - template: pipelines/initialization_job.yml
+
+  - stage: build_artifact
+    displayName: Start build artifacts
+    jobs:
+      - job: prepare_build_env
+        displayName: Prepare Build environment
+        steps:
+          - template: pipelines/build_artifact_job.yml
