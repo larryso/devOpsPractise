@@ -1,6 +1,8 @@
 parameters:
   - name: environment
+    default: Dev
   - name: namespace
+    default: demo
 
 stages:
   - stage: deployment
