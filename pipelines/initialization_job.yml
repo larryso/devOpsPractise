@@ -7,7 +7,7 @@ parameters:
     default: true
 
 steps:
-  - task: Bash@2
+  - task: Bash@3
     displayName: Initialization task
     inputs:
       targetType: 'inline'
