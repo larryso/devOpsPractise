@@ -1,0 +1,32 @@
+parameters:
+  - name: environment
+  - name: namespace
+
+stages:
+  - stage: deployment
+    displayName: "Application Deploy"
+    jobs:
+      - job: configureSecrets
+        displayName: "Config secret only"
+        steps:
+          - task: Bash@3
+            displayName: Start Deployment
+            inputs:
+              targetType: 'inline'
+              script: |
+                   echo "start deployment...."
+
+      - deployment: deployment_app
+        displayName: start deploy your 
+        environment: Dev
+        strategy:
+          runOnce: 
+            deploy:
+              steps:
+                - checkout: self
+                - task: Bash@3
+                  displayName: Start Deployment
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                             echo "deploy done...."

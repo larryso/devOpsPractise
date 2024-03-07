@@ -38,12 +38,4 @@ stages:
         steps:
           - template: pipelines/build_artifact_job.yml
 
-  - stage: Deploy_${{parameters.stageName}}
-    displayName: Deploy to ${{parameters.stageName}}
-    dependsOn: build_artifact
-    condition: and(succeeded(), ${{parameters.condition}})
-    jobs:
-      - job: release_to_environment
-        displayName: Release to environment
-        steps:
-          - template: pipelines/deployment_job.yml
+  - template: pipelines/deployment.yml
